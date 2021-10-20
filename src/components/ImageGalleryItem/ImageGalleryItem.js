@@ -9,8 +9,6 @@ function ImageGalleryItem({ images }) {
   const [stateModal, setStateModal] = useState(false);
   const [urlImgModal, setUrlImgModal] = useState("");
 
-  // console.log(images)
-
   const openModal = (e) => {
     setStateModal(true);
     setUrlImgModal(e.target.dataset.url);

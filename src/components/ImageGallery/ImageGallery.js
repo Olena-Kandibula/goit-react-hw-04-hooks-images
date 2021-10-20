@@ -14,12 +14,13 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 function ImageGallery({ searchQuery }) {
   const [images, setImages] = useState([]);
   const [imagesTotal, setImagesTotal] = useState(null);
-  const [error, setError] = useState(null);
   const [status, setStatus] = useState("idle");
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     setCurrentPage(1);
+    setImagesTotal(null);
+    setImages([]);
   }, [searchQuery]);
 
   useEffect(() => {
@@ -31,9 +32,6 @@ function ImageGallery({ searchQuery }) {
 
         .then((data) => {
           if (data.total !== 0) {
-            // setImagesTotal(images.totalHits)
-            console.log(data);
-
             return (
               setImages(data.hits),
               setImagesTotal(data.totalHits),
@@ -43,59 +41,22 @@ function ImageGallery({ searchQuery }) {
 
           return setStatus("rejected");
         });
-      // .catch(error => console.log(error))
-      // .catch(error =>setError( error ), setStatus( 'rejected' ))
     }
   }, [currentPage, searchQuery]);
 
   const addImages = () => {
     setStatus("pending");
-
-    // const {  searchQuery, currentPage } = this.state;
-    // let nextPage = currentPage + 1;
     setCurrentPage(currentPage + 1);
-
-    // ===========
-    // imagesAPI
-    // .fetchImg(searchQuery, currentPage)
-
-    // .then(data => {
-
-    //     if (data.total !== 0) {
-
-    //         // setImagesTotal(images.totalHits)
-    //         console.log(data)
-
-    //         return (setImages(data.hits),
-    //             setImagesTotal(data.totalHits),
-    //             setStatus('resolved')
-    //         )
-    //     }
-    //     return setStatus( 'rejected');
-    // })
-
-    // ================
 
     imagesAPI
 
       .fetchImg(searchQuery, currentPage)
-
-      // .then( data => {
-      //     return (setImages([...images, ...data.hits]),
-      //         setStatus('resolved'),
-      //         setCurrentPage(currentPage + 1)
-      //     )
-
-      // console.log('data2',data)
-      // return data;
-
-      // };
-      // })
       .then((data) => {
-        setImages([...images, ...data.hits]);
-        setStatus("resolved");
-        setCurrentPage(currentPage + 1);
-        return data;
+        return (
+          setImages([...images, ...data.hits]),
+          setStatus("resolved"),
+          setCurrentPage(currentPage + 1)
+        );
       })
 
       .finally(() => {
@@ -105,11 +66,6 @@ function ImageGallery({ searchQuery }) {
         });
       });
   };
-
-  // render() {
-  // const { images, status, imagesTotal, currentPage } = this.state;
-
-  // const { searchQuery } = this.props;
 
   const availablePages = Math.ceil(imagesTotal / 12);
 

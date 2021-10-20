@@ -1,42 +1,41 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 import PropTypes from "prop-types";
 
 import s from "./Modal.module.css";
 
-class Modal extends Component {
-  constructor(props) {
-    super(props);
-    this.escFunction = this.escFunction.bind(this);
-  }
+function Modal({ closeModal, children }) {
+  useEffect(() => {
+    document.addEventListener("keydown", escFunction, false);
 
-  escFunction(event) {
-    if (event.keyCode === 27) {
-      this.props.closeModal();
+    return () => {
+      document.removeEventListener("keydown", escFunction, false);
+    };
+  });
+
+  const escFunction = (e) => {
+    if (e.keyCode === 27) {
+      closeModal();
     }
-  }
+  };
 
-  componentDidMount() {
-    document.addEventListener("keydown", this.escFunction, false);
-  }
+  return createPortal(
+    <div
+      className={s.overlay}
+      onClick={(e) => {
+        closeModal();
+      }}
+    >
+      <div className={s.modal}>{children}</div>
+    </div>,
 
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.escFunction, false);
-  }
-
-  render() {
-    return createPortal(
-      <div className={s.overlay}>
-        <div className={s.modal}>{this.props.children}</div>
-      </div>,
-
-      document.getElementById("modal-root")
-    );
-  }
+    document.getElementById("modal-root")
+  );
 }
 
 Modal.protoType = {
   closeModal: PropTypes.func,
+  children: PropTypes.node,
 };
 
 export default Modal;
