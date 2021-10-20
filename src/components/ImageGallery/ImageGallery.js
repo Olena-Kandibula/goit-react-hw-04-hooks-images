@@ -98,9 +98,6 @@ function ImageGallery({ searchQuery }) {
         return data;
       })
 
-      // }
-      // )
-
       .finally(() => {
         window.scrollTo({
           top: document.documentElement.scrollHeight,
