@@ -21,18 +21,15 @@ function ImageGallery({ searchQuery }) {
     setCurrentPage(1);
     setImagesTotal(null);
     setImages([]);
-  }, [searchQuery]);
 
-  useEffect(() => {
     if (searchQuery !== "") {
       setStatus("pending");
 
       imagesAPI
-        .fetchImg(searchQuery, currentPage)
+        .fetchImg(searchQuery, 1)
 
         .then((data) => {
           if (data.total !== 0) {
-            console.log(data);
             return (
               setImages(data.hits),
               setImagesTotal(data.totalHits),
@@ -41,9 +38,10 @@ function ImageGallery({ searchQuery }) {
           }
 
           return setStatus("rejected");
-        });
+        })
+        .catch((error) => console.worm(error));
     }
-  }, [currentPage, searchQuery]);
+  }, [searchQuery]);
 
   const addImages = () => {
     setStatus("pending");
@@ -52,14 +50,12 @@ function ImageGallery({ searchQuery }) {
     imagesAPI
 
       .fetchImg(searchQuery, currentPage)
+
       .then((data) => {
-        // console.log(data)
-        return (
-          setImages([...images, ...data.hits]),
-          setStatus("resolved"),
-          setCurrentPage(currentPage + 1)
-        );
+        return setImages([...images, ...data.hits]), setStatus("resolved");
       })
+
+      .catch((error) => console.worm(error))
 
       .finally(() => {
         window.scrollTo({
@@ -116,7 +112,6 @@ function ImageGallery({ searchQuery }) {
     );
   }
 }
-// }
 
 ImageGallery.prototypes = {
   searchQuery: PropTypes.string,
