@@ -32,6 +32,7 @@ function ImageGallery({ searchQuery }) {
 
         .then((data) => {
           if (data.total !== 0) {
+            console.log(data);
             return (
               setImages(data.hits),
               setImagesTotal(data.totalHits),
@@ -52,6 +53,7 @@ function ImageGallery({ searchQuery }) {
 
       .fetchImg(searchQuery, currentPage)
       .then((data) => {
+        // console.log(data)
         return (
           setImages([...images, ...data.hits]),
           setStatus("resolved"),
